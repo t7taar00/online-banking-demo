@@ -1,0 +1,35 @@
+  DELIMITER //
+  CREATE PROCEDURE account_transfer(IN first_id INT, IN second_id INT, IN transfer_amount DOUBLE )
+  BEGIN
+  
+  START TRANSACTION;
+  UPDATE tili SET Saldo=Saldo + transfer_amount WHERE TiliID=first_id;
+  SET @test1=ROW_COUNT();
+  UPDATE tili SET Saldo=Saldo - transfer_amount WHERE TiliID=second_id;
+  SET @test2=ROW_COUNT();
+    IF (@test1 > 0 && @test2 > 0) THEN
+        COMMIT; 
+    ELSE
+        ROLLBACK;
+	END IF;
+
+  END //
+  DELIMITER ;
+
+------------------------------------------------------------
+
+  DELIMITER //
+  CREATE PROCEDURE credit_transfer( IN account_id INT, IN transfer_amount DOUBLE )
+  BEGIN
+  
+  START TRANSACTION;
+  UPDATE tili SET Saldo=Saldo - transfer_amount WHERE TiliID=account_id;
+  SET @test=ROW_COUNT();
+    IF (@test > 0) THEN
+        COMMIT; 
+    ELSE
+        ROLLBACK;
+	END IF;
+
+  END //
+  DELIMITER ;

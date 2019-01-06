@@ -1,0 +1,71 @@
+---------- TAULUT ----------
+
+CREATE TABLE Asiakas(
+AsiakasID INT primary key auto_increment,
+Etunimi VARCHAR(45) NOT NULL,
+Sukunimi VARCHAR(45) NOT NULL
+);
+
+CREATE TABLE Tilioikeudet(
+TilioikeudetID INT primary key,
+AsiakasID INT,
+TiliID INT,
+Pankkitunnus VARCHAR(45),
+Salasana VARCHAR(255),
+FOREIGN KEY(AsiakasID) REFERENCES Asiakas(AsiakasID)
+ON UPDATE CASCADE
+ON DELETE RESTRICT,
+FOREIGN KEY(TiliID) REFERENCES Tili(TiliID)
+ON UPDATE CASCADE
+ON DELETE RESTRICT
+);
+
+CREATE TABLE Tili(
+TiliID INT primary key,
+Saldo DOUBLE
+);
+
+CREATE TABLE Kortti(
+KorttiID INT primary key,
+TiliID INT,
+Salasana VARCHAR(255),
+FOREIGN KEY(TiliID) REFERENCES Tili(TiliID)
+ON UPDATE CASCADE
+ON DELETE RESTRICT
+);
+
+---------- DATAN LISÄYS ----------
+
+----- Perhe Virtanen -----
+----- Matilla 3 tiliä (Kaikkien omistaja), Martalla ja Eerolla 1, Eerolla ei korttia
+
+INSERT INTO Asiakas(Etunimi,Sukunimi) VALUES('Matti','Virtanen');
+INSERT INTO Asiakas(Etunimi,Sukunimi) VALUES('Martta','Virtanen');
+INSERT INTO Asiakas(Etunimi,Sukunimi) VALUES('Eero','Virtanen');
+
+INSERT INTO Tili(TiliID,Saldo) VALUES(1,10000);
+INSERT INTO Tili(TiliID,Saldo) VALUES(2,2000);
+INSERT INTO Tili(TiliID,Saldo) VALUES(3,500);
+
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(1,1,1,'001002003','1234');
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(2,1,2,'004005006','2345');
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(3,1,3,'007008009','3456');
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(4,2,2,'010203040','1001');
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(5,3,3,'050607080','2002');
+
+INSERT INTO Kortti(KorttiID,TiliID,Salasana) VALUES(1,1,'0001');
+INSERT INTO Kortti(KorttiID,TiliID,Salasana) VALUES(2,2,'0002');
+
+----- Perhe Jokinen -----
+----- Annilla ja Erkillä yhteinen tili, molemmilla kortit
+
+INSERT INTO Asiakas(Etunimi,Sukunimi) VALUES('Anni','Jokinen');
+INSERT INTO Asiakas(Etunimi,Sukunimi) VALUES('Erkki','Jokinen');
+
+INSERT INTO Tili(TiliID,Saldo) VALUES(4,6000);
+
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(6,4,4,'111222333','1112');
+INSERT INTO Tilioikeudet(TilioikeudetID,AsiakasID,TiliID,Pankkitunnus,Salasana) VALUES(7,5,4,'444555666','2223');
+
+INSERT INTO Kortti(KorttiID,TiliID,Salasana) VALUES(3,4,'5555');
+INSERT INTO Kortti(KorttiID,TiliID,Salasana) VALUES(4,4,'6666');
